@@ -12,6 +12,5 @@ kotlin {
     }
 }
 dependencies {
-    implementation(project(":NetworkFetcher"))
     implementation(libs.kotlinx.coroutines.core)
 }

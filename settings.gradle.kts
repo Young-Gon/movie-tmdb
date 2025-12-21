@@ -23,3 +23,4 @@ rootProject.name = "movie-tmdb"
 include(":app")
 include(":domain")
 include(":data")
+include(":NetworkFetcher")

@@ -22,8 +22,7 @@ fun MovieApp(modifier: Modifier = Modifier) {
         NavDisplay(
             backStack = appBackstack,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+                .fillMaxSize(),
             entryDecorators = listOf(
                 rememberSaveableStateHolderNavEntryDecorator(),
                 rememberViewModelStoreNavEntryDecorator(),
@@ -33,7 +32,7 @@ fun MovieApp(modifier: Modifier = Modifier) {
                     HomeScreen()
                 }
                 entry<Route.Detail> { key ->
-                    DetailScreen(id = key.id)
+                    DetailScreen(modifier= Modifier.fillMaxSize().padding(innerPadding),id = key.id)
                 }
             },
         )

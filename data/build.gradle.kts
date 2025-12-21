@@ -42,10 +42,21 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":NetworkFetcher"))
+    implementation(platform(libs.retrofit.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.kotlinx.serialization)
+    implementation(libs.logging.interceptor)
+
+    // kotlinx.serialization
+    implementation(libs.kotlinx.serialization.json)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
