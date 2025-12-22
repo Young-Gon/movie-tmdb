@@ -1,64 +1,30 @@
 package com.gondev.domain.usecase
 
 import com.gondev.domain.repository.MovieRepository
-import kotlinx.coroutines.flow.combine
+import com.gondev.networkfetcher.NetworkFetcher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class GetMovieFeedUseCase @Inject constructor(
     private val repository: MovieRepository
 ) {
-    /*operator fun invoke(): Flow<NetworkFetcher<List<PageContainer<MovieModel>?>>> {
-        return combine(
-            repository.getNowPlayingMovies(),
-            repository.getUpcomingMovies(),
-            repository.getTrendingMovie()
-        ) {  nowPlaying, upcoming,trending ->
+    operator fun invoke() = NetworkFetcher {
+        coroutineScope {
+            // 각 suspend 함수를 async로 비동기적으로 실행합니다.
+            val nowPlayingDeferred = async { repository.getNowPlayingMovies() }
+            val upcomingDeferred = async { repository.getUpcomingMovies() }
+            val trendingDeferred = async { repository.getTrendingMovie() }
 
-            // 전략: 하나라도 로딩 중이면 로딩 상태 반환
-            if (trending is NetworkResult.Loading ||
-                nowPlaying is NetworkResult.Loading ||
-                upcoming is NetworkResult.Loading) {
-                NetworkResult.Loading
-            }
-            // 전략: 모두 성공했을 때만 Success 반환
-            else if (trending is NetworkResult.Success &&
-                nowPlaying is NetworkResult.Success &&
-                upcoming is NetworkResult.Success) {
-                NetworkResult.Success(
-                    HomeContent(trending.data, nowPlaying.data, upcoming.data)
-                )
-            }
-            // 전략: 하나라도 에러가 나면 에러 상태 반환 (혹은 로직에 따라 부분 성공 처리)
-            else {
-                val error = (trending as? NetworkResult.Error)?.exception
-                    ?: (nowPlaying as? NetworkResult.Error)?.exception
-                    ?: (upcoming as? NetworkResult.Error)?.exception
-                    ?: Exception("Unknown Error")
-                NetworkResult.Error(error)
-            }
-        }
-    }*/
-    operator fun invoke() = combine(
-            repository.getNowPlayingMovies(),
-            repository.getUpcomingMovies(),
-            repository.getTrendingMovie()
-        ) { nowPlaying, upcoming, trending ->
-        }
-    /*operator fun invoke() = NetworkFetcher {
-        combine(
-            repository.getNowPlayingMovies(),
-            repository.getUpcomingMovies(),
-            repository.getTrendingMovie()
-        ) { nowPlaying, upcoming, trending ->
-            trending.hasException { throw it }
-            nowPlaying.hasException { throw it }
-            upcoming.hasException { throw it }
+            // 각 async 작업의 결과를 기다립니다. 이들은 병렬로 실행됩니다.
+            val nowPlaying = nowPlayingDeferred.await()
+            val upcoming = upcomingDeferred.await()
+            val trending = trendingDeferred.await()
 
-            if(trending is NetworkResult.Success &&
-                nowPlaying is NetworkResult.Success &&
-                upcoming is NetworkResult.Success){
-                    listOf(trending.data, nowPlaying.data, upcoming.data)
-            }
+            // 세 가지 결과를 Triple로 묶어 반환합니다.
+            // NetworkResult<T> 타입이라면, 여기서는 NetworkResult<Triple<...>>를 반환하도록 합니다.
+            // 실제 데이터 통합 로직은 이 부분에 작성하시면 됩니다.
+            Triple(nowPlaying, upcoming, trending)
         }
-    }.flow*/
+    }.flow
 }

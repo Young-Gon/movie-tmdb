@@ -1,11 +1,10 @@
 package com.gondev.data.repository
 
 import com.gondev.data.model.MediaType
-import com.gondev.data.model.TVDetail
 import com.gondev.data.service.ApiService
 import com.gondev.domain.repository.TVRepository
+import com.gondev.networkfetcher.MutateFetcher
 import com.gondev.networkfetcher.NetworkFetcher
-import com.skylabs.carton.b2h.data.model.MutateFetcher
 import javax.inject.Inject
 
 class TVRepositoryImpl @Inject constructor(
@@ -23,11 +22,11 @@ class TVRepositoryImpl @Inject constructor(
         apiService.getTopRatedTVs().toDomain { it.toDomain() }
     }.flow
 
-    override fun getSearch() = MutateFetcher {query ->
+    override fun getSearch() = MutateFetcher { query ->
         apiService.getSearch(MediaType.tv, query).toDomain { it.toDomain() }
     }.flow
 
     override fun getDetail(mediaId: Long) = NetworkFetcher {
-        apiService.getDetail<TVDetail>(MediaType.tv, mediaId).toDomain()
+        apiService.getTvDetail( mediaId).toDomain()
     }.flow
 }

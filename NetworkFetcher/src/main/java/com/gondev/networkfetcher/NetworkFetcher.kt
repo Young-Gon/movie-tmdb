@@ -35,7 +35,7 @@ class NetworkFetcher<R>(
 
         try {
             cachedData = api()
-            emit(NetworkResult.Success(refreshTrigger, cachedData))
+            emit(NetworkResult.Success(refreshTrigger, cachedData!!))
         } catch (e: Exception) {
             emit(NetworkResult.Error(refreshTrigger, e, cachedData))
         }

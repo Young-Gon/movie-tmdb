@@ -2,8 +2,10 @@ package com.gondev.data.service
 
 import com.gondev.data.model.MediaType
 import com.gondev.data.model.Movie
+import com.gondev.data.model.MovieDetail
 import com.gondev.data.model.PageContainer
 import com.gondev.data.model.TV
+import com.gondev.data.model.TVDetail
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -51,17 +53,25 @@ interface ApiService {
         region: String = "KR"
     ): PageContainer<Movie>
 
-    @GET("/{media_type}/{media_id}")
-    suspend fun <R> getDetail(
-        @Path("media_type")
-        mediaType: MediaType,
+    @GET("/movie/{media_id}")
+    suspend fun getMovieDetail(
         @Path("media_id")
         mediaId: Long,
         @Query("append_to_response")
         appendToResponse: String = "videos",
         @Query("language")
         language: String = "ko-KR",
-    ): R
+    ): MovieDetail
+
+    @GET("/tv/{media_id}")
+    suspend fun getTvDetail(
+        @Path("media_id")
+        mediaId: Long,
+        @Query("append_to_response")
+        appendToResponse: String = "videos",
+        @Query("language")
+        language: String = "ko-KR",
+    ): TVDetail
 
     @GET("/tv/airing_today")
     suspend fun getAiringToday(
