@@ -1,5 +1,6 @@
 package com.gondev.networkfetcher
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,6 +22,8 @@ class MutateFetcher<P, R>(
         try {
             cachedData = api(params)
             emit(MutateResult.Success(_mutationTrigger, cachedData))
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             emit(MutateResult.Error(_mutationTrigger, e, cachedData))
         }
