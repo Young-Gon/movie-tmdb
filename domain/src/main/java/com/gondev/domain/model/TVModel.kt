@@ -1,5 +1,8 @@
 package com.gondev.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class TVModel(
     override val backdropPath: String?,
     val genreIds: List<Int>,
@@ -16,7 +19,8 @@ data class TVModel(
     override val originalName: String
 ) : ITVModel
 
-interface ITVModel : IMediaModel {
+@Serializable
+sealed interface ITVModel : IMediaModel {
     val originCountry: List<String>
     val originalName: String
 }

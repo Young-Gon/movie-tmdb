@@ -1,6 +1,9 @@
 package com.gondev.domain.model
 
-interface IMediaModel {
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed interface IMediaModel {
     val backdropPath: String?
     val id: Int
     val originalLanguage: String

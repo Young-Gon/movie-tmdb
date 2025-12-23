@@ -19,13 +19,14 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.gondev.domain.model.IMediaModel
 import com.gondev.movie.navi.HomeTab
 import com.gondev.movie.ui.screen.home.tabs.MovieTab
 import com.gondev.movie.ui.screen.home.tabs.SearchTab
 import com.gondev.movie.ui.screen.home.tabs.TVTab
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit) {
     val tabBackstack: MutableList<HomeTab> = remember { mutableStateListOf(HomeTab.Movie) }
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -71,7 +72,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 rememberViewModelStoreNavEntryDecorator(),
             ),
             entryProvider = entryProvider {
-                entry<HomeTab.Movie> { MovieTab() }
+                entry<HomeTab.Movie> { MovieTab(gotoDetail = gotoDetail) }
                 entry<HomeTab.TvShow> { TVTab() }
                 entry<HomeTab.Search> { SearchTab() }
             },

@@ -29,10 +29,17 @@ fun MovieApp(modifier: Modifier = Modifier) {
             ),
             entryProvider = entryProvider {
                 entry<Route.Home> {
-                    HomeScreen()
+                    HomeScreen {
+                        appBackstack.add(Route.Detail(it))
+                    }
                 }
                 entry<Route.Detail> { key ->
-                    DetailScreen(modifier= Modifier.fillMaxSize().padding(innerPadding),id = key.id)
+                    DetailScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        id = key.mediaModel
+                    )
                 }
             },
         )

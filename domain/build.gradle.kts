@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
     alias(libs.plugins.jetbrains.kotlin.jvm)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -15,4 +16,5 @@ dependencies {
     implementation(project(":NetworkFetcher"))
     implementation(libs.kotlinx.coroutines.core)
     implementation("javax.inject:javax.inject:1")
+    implementation(libs.kotlinx.serialization.core)
 }
