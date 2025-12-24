@@ -15,8 +15,13 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,6 +54,7 @@ fun MovieTab(
             modifier = modifier,
             isLoading = movieFeed is NetworkResult.Loading,
             isError = movieFeed is NetworkResult.Error,
+            onRefresh = { movieFeed.refresh() },
             gotoDetail = gotoDetail,
             nowPlaying = movieData.first,
             upcoming = movieData.second,
@@ -71,73 +77,87 @@ private fun MovieTab(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
     isError: Boolean,
+    onRefresh: () -> Unit,
     gotoDetail: (IMediaModel) -> Unit,
     nowPlaying: PageContainer<MovieModel>,
     upcoming: PageContainer<MovieModel>,
     trending: PageContainer<MovieModel>
 ) {
-    ContentsWithNetworkState(
-        modifier = modifier,
-        isLoading = isLoading,
-        isError = isError
+    var isRefreshing by remember { mutableStateOf(false) }
+    LaunchedEffect(isLoading) {
+        if (!isLoading)
+            isRefreshing = false
+    }
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = {
+            isRefreshing = true
+            onRefresh()
+        },
     ) {
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            contentPadding = PaddingValues(end = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ContentsWithNetworkState(
+            modifier = modifier,
+            isLoading = isLoading,
+            isError = isError
         ) {
-            item {
-                HorizontalPager(
-                    state = rememberPagerState(pageCount = { trending.results.size }),
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .height(180.dp)
-                ) { index ->
-                    val movie = trending.results[index]
-                    MoviePagerItem(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        movieModel = movie,
-                        onClick = { gotoDetail(movie) }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
-
-                // Upcoming Movies 섹션
-                Text(
-                    text = "Upcoming Movies",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 16.dp), // 좌우 패딩
-                    horizontalArrangement = Arrangement.spacedBy(8.dp) // 아이템 간 간격
-                ) {
-                    items(upcoming.results) { movie ->
-                        SimpleMediaItem(
-                            mediaItem = movie,
+            LazyColumn(
+                modifier = modifier.fillMaxSize(),
+                contentPadding = PaddingValues(end = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item {
+                    HorizontalPager(
+                        state = rememberPagerState(pageCount = { trending.results.size }),
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                    ) { index ->
+                        val movie = trending.results[index]
+                        MoviePagerItem(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            movieModel = movie,
                             onClick = { gotoDetail(movie) }
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
+
+                    // Upcoming Movies 섹션
+                    Text(
+                        text = "Upcoming Movies",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    LazyRow(
+                        contentPadding = PaddingValues(horizontal = 16.dp), // 좌우 패딩
+                        horizontalArrangement = Arrangement.spacedBy(8.dp) // 아이템 간 간격
+                    ) {
+                        items(upcoming.results) { movie ->
+                            SimpleMediaItem(
+                                mediaItem = movie,
+                                onClick = { gotoDetail(movie) }
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
+
+                    // Trending Movies 섹션
+                    Text(
+                        text = "Now Playing",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
-
-                // Trending Movies 섹션
-                Text(
-                    text = "Now Playing",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-
-            items(nowPlaying.results) { movie ->
-                MediaItem(
-                    mediaModel = movie,
-                    onClick = { gotoDetail(movie) }
-                )
+                items(nowPlaying.results) { movie ->
+                    MediaItem(
+                        mediaModel = movie,
+                        onClick = { gotoDetail(movie) }
+                    )
+                }
             }
         }
     }
@@ -150,6 +170,7 @@ private fun MovieTabPreview() {
         MovieTab(
             isLoading = false,
             isError = false,
+            onRefresh = {},
             gotoDetail = {},
             nowPlaying = PageContainer.createTestInstance(
                 listOf(

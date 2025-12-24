@@ -77,8 +77,6 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-    implementation(libs.androidx.compose.material.pullrefresh)
-
 
     implementation(libs.androidx.material.icons.extended)
 
