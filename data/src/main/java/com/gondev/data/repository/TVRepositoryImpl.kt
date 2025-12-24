@@ -1,6 +1,5 @@
 package com.gondev.data.repository
 
-import com.gondev.data.model.MediaType
 import com.gondev.data.service.ApiService
 import com.gondev.domain.repository.TVRepository
 import javax.inject.Inject
@@ -18,7 +17,7 @@ class TVRepositoryImpl @Inject constructor(
         apiService.getTopRatedTVs().toDomain { it.toDomain() }
 
     override suspend fun getSearch(query: String) =
-        apiService.getSearch(MediaType.tv, query).toDomain { it.toDomain() }
+        apiService.getSearchTV(query).toDomain { it.toDomain() }
 
     override suspend fun getDetail(mediaId: Long) =
         apiService.getTvDetail( mediaId).toDomain()

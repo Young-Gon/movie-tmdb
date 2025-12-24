@@ -1,6 +1,5 @@
 package com.gondev.data.service
 
-import com.gondev.data.model.MediaType
 import com.gondev.data.model.Movie
 import com.gondev.data.model.MovieDetail
 import com.gondev.data.model.PageContainer
@@ -47,10 +46,8 @@ interface ApiService {
         language: String = "ko-KR",
     ): PageContainer<TV>
 
-    @GET("/search/{media_type}")
-    suspend fun getSearch(
-        @Path("media_type")
-        mediaType: MediaType,
+    @GET("/search/movie")
+    suspend fun  getSearchMovie(
         @Query("query")
         query: String,
         @Query("language")
@@ -58,6 +55,16 @@ interface ApiService {
         @Query("region")
         region: String = "KR"
     ): PageContainer<Movie>
+
+    @GET("/search/tv")
+    suspend fun  getSearchTV(
+        @Query("query")
+        query: String,
+        @Query("language")
+        language: String = "ko-KR",
+        @Query("region")
+        region: String = "KR"
+    ): PageContainer<TV>
 
     @GET("/movie/{media_id}")
     suspend fun getMovieDetail(

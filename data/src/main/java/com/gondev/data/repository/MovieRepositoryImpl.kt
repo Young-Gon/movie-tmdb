@@ -1,6 +1,5 @@
 package com.gondev.data.repository
 
-import com.gondev.data.model.MediaType
 import com.gondev.data.service.ApiService
 import com.gondev.domain.repository.MovieRepository
 import javax.inject.Inject
@@ -18,7 +17,7 @@ class MovieRepositoryImpl @Inject constructor(
         apiService.getMovieTrending().toDomain { it.toDomain() }
 
     override suspend fun getSearch(query: String) =
-        apiService.getSearch(MediaType.movie, query).toDomain { it.toDomain() }
+        apiService.getSearchMovie(query).toDomain { it.toDomain() }
 
     override suspend fun getDetail(mediaId: Long) =
         apiService.getMovieDetail(mediaId).toDomain()

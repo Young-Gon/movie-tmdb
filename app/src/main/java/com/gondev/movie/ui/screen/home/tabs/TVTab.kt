@@ -98,9 +98,11 @@ private fun TvTab(
             isError = isError
         ) {
             Column(
-                modifier = Modifier.fillMaxSize().verticalScroll(
-                    rememberScrollState()
-                )
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(
+                        rememberScrollState()
+                    )
             ) {
 
                 // Upcoming Movies 섹션
@@ -180,21 +182,24 @@ private fun TvTabPreview() {
                 listOf(
                     TVModel.createTestInstance(1),
                     TVModel.createTestInstance(2),
-                    TVModel.createTestInstance(3)
+                    TVModel.createTestInstance(3),
+                    TVModel.createTestInstance(10),
                 )
             ),
             topRateTv = PageContainer.createTestInstance(
                 listOf(
                     TVModel.createTestInstance(4),
                     TVModel.createTestInstance(5),
-                    TVModel.createTestInstance(6)
+                    TVModel.createTestInstance(6),
+                    TVModel.createTestInstance(11),
                 )
             ),
             trending = PageContainer.createTestInstance(
                 listOf(
                     TVModel.createTestInstance(7),
                     TVModel.createTestInstance(8),
-                    TVModel.createTestInstance(9)
+                    TVModel.createTestInstance(9),
+                    TVModel.createTestInstance(12),
                 )
             ),
         )
