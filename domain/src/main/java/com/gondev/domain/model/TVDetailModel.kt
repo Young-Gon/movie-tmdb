@@ -1,7 +1,7 @@
 package com.gondev.domain.model
 
 data class TVDetailModel(
-    val adult: Boolean = false,
+    override val adult: Boolean = false,
     override val backdropPath: String?,
     override val id: Int,
     override val originalLanguage: String,

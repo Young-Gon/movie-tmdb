@@ -41,7 +41,6 @@ data class MovieModel(
 
 @Serializable
 sealed interface IMovieModel : IMediaModel {
-    val adult: Boolean
     val originalTitle: String
     val voteAverage: Double
     val voteCount: Int

@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Movie(
+    val adult: Boolean = false,
     @SerialName("backdrop_path")
     val backdropPath: String? = null,
     @SerialName("genre_ids")
@@ -21,7 +22,6 @@ data class Movie(
     val voteAverage: Double = 0.0,
     @SerialName("vote_count")
     val voteCount: Int = 0,
-    val adult: Boolean = false,
     @SerialName("original_title")
     val originalTitle: String = "",
     val releaseDate: String = "",

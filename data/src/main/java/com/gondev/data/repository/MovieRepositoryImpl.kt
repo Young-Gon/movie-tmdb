@@ -15,7 +15,7 @@ class MovieRepositoryImpl @Inject constructor(
         apiService.getUpcomingMovies().toDomain { it.toDomain() }
 
     override suspend fun getTrendingMovie() =
-        apiService.getTrending(MediaType.movie).toDomain { it.toDomain() }
+        apiService.getMovieTrending().toDomain { it.toDomain() }
 
     override suspend fun getSearch(query: String) =
         apiService.getSearch(MediaType.movie, query).toDomain { it.toDomain() }

@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TV(
+    val adult: Boolean,
     @SerialName("backdrop_path")
     val backdropPath: String?,
     @SerialName("first_air_date")
@@ -30,6 +31,7 @@ data class TV(
     val voteCount: Int,
 ) {
     fun toDomain(): TVModel = TVModel(
+        adult = adult,
         backdropPath = backdropPath,
         releaseDate = firstAirDate,
         genreIds = genreIds,

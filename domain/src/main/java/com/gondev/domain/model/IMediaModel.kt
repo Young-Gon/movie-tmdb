@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface IMediaModel {
+    val adult: Boolean
     val backdropPath: String?
     val id: Int
     val originalLanguage: String

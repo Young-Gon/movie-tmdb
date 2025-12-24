@@ -4,14 +4,11 @@ import com.gondev.domain.model.MovieModel
 import com.gondev.domain.model.PageContainer
 import com.gondev.domain.model.TVDetailModel
 import com.gondev.domain.model.TVModel
-import com.gondev.networkfetcher.MutateResult
-import com.gondev.networkfetcher.NetworkResult
-import kotlinx.coroutines.flow.Flow
 
 interface TVRepository {
-    fun getTrendingTVs(): Flow<NetworkResult<out PageContainer<MovieModel>?>>
-    fun getAiringToday(): Flow<NetworkResult<out PageContainer<TVModel>?>>
-    fun getTopRatedTVs(): Flow<NetworkResult<out PageContainer<TVModel>?>>
-    fun getSearch(): Flow<MutateResult<String, out PageContainer<MovieModel>?>>
-    fun getDetail(mediaId: Long): Flow<NetworkResult<out TVDetailModel?>>
+    suspend fun getTrendingTVs(): PageContainer<TVModel>
+    suspend fun getAiringToday(): PageContainer<TVModel>
+    suspend fun getTopRatedTVs(): PageContainer<TVModel>
+    suspend fun getSearch(query: String): PageContainer<MovieModel>
+    suspend fun getDetail(mediaId: Long): TVDetailModel
 }

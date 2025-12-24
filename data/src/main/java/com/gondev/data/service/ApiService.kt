@@ -31,15 +31,21 @@ interface ApiService {
         region: String = "KR"
     ): PageContainer<Movie>
 
-    @GET("/trending/{media_type}/{time_window}")
-    suspend fun getTrending(
-        @Path("media_type")
-        mediaType: MediaType,
+    @GET("/trending/movie/{time_window}")
+    suspend fun getMovieTrending(
         @Path("time_window")
         timeWindow: String = "week",
         @Query("language")
         language: String = "ko-KR",
     ): PageContainer<Movie>
+
+    @GET("/trending/tv/{time_window}")
+    suspend fun getTVTrending(
+        @Path("time_window")
+        timeWindow: String = "week",
+        @Query("language")
+        language: String = "ko-KR",
+    ): PageContainer<TV>
 
     @GET("/search/{media_type}")
     suspend fun getSearch(

@@ -73,8 +73,8 @@ fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit)
             ),
             entryProvider = entryProvider {
                 entry<HomeTab.Movie> { MovieTab(gotoDetail = gotoDetail) }
-                entry<HomeTab.TvShow> { TVTab() }
-                entry<HomeTab.Search> { SearchTab() }
+                entry<HomeTab.TvShow> { TVTab(gotoDetail = gotoDetail) }
+                entry<HomeTab.Search> { SearchTab(gotoDetail = gotoDetail) }
             },
         )
     }
