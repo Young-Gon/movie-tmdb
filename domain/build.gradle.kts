@@ -15,6 +15,6 @@ kotlin {
 dependencies {
     implementation(project(":NetworkFetcher"))
     implementation(libs.kotlinx.coroutines.core)
-    implementation("javax.inject:javax.inject:1")
+    implementation(libs.javax.inject)
     implementation(libs.kotlinx.serialization.core)
 }

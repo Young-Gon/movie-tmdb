@@ -2,19 +2,17 @@ package com.gondev.movie.ui.screen.home.tabs
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +28,7 @@ import com.gondev.domain.model.PageContainer
 import com.gondev.movie.ui.common.ContentsWithNetworkState
 import com.gondev.movie.ui.common.ErrorScreen
 import com.gondev.movie.ui.common.LoadingScreen
+import com.gondev.movie.ui.component.MediaItem
 import com.gondev.movie.ui.component.MoviePagerItem
 import com.gondev.movie.ui.component.SimpleMediaItem
 import com.gondev.movie.ui.theme.MovietmdbTheme
@@ -77,73 +76,69 @@ private fun MovieTab(
     upcoming: PageContainer<MovieModel>,
     trending: PageContainer<MovieModel>
 ) {
-
-    val pagerState = rememberPagerState(pageCount = { nowPlaying.results.size })
     ContentsWithNetworkState(
         modifier = modifier,
         isLoading = isLoading,
         isError = isError
     ) {
-        Column(
-            modifier = modifier.verticalScroll(rememberScrollState())
+        LazyColumn(
+            modifier = modifier.fillMaxSize(),
+            contentPadding = PaddingValues(end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-            ) { index ->
-                val movie = nowPlaying.results[index]
-                MoviePagerItem(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    movieModel = movie,
-                    onClick = { gotoDetail(movie) }
+            item {
+                HorizontalPager(
+                    state = rememberPagerState(pageCount = { trending.results.size }),
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                ) { index ->
+                    val movie = trending.results[index]
+                    MoviePagerItem(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        movieModel = movie,
+                        onClick = { gotoDetail(movie) }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
+
+                // Upcoming Movies 섹션
+                Text(
+                    text = "Upcoming Movies",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 16.dp), // 좌우 패딩
+                    horizontalArrangement = Arrangement.spacedBy(8.dp) // 아이템 간 간격
+                ) {
+                    items(upcoming.results) { movie ->
+                        SimpleMediaItem(
+                            mediaItem = movie,
+                            onClick = { gotoDetail(movie) }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
+
+                // Trending Movies 섹션
+                Text(
+                    text = "Now Playing",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
-
-            // Upcoming Movies 섹션
-            Text(
-                text = "개봉 예정 영화",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp), // 좌우 패딩
-                horizontalArrangement = Arrangement.spacedBy(8.dp) // 아이템 간 간격
-            ) {
-                items(upcoming.results) { movie ->
-                    SimpleMediaItem(
-                        mediaItem = movie,
-                        onClick = { gotoDetail(movie) }
-                    )
-                }
+            items(nowPlaying.results) { movie ->
+                MediaItem(
+                    mediaModel = movie,
+                    onClick = { gotoDetail(movie) }
+                )
             }
-
-            Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
-
-            // Trending Movies 섹션
-            Text(
-                text = "주간 인기 영화",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp), // 좌우 패딩
-                horizontalArrangement = Arrangement.spacedBy(8.dp) // 아이템 간 간격
-            ) {
-                items(trending.results) { movie ->
-                    SimpleMediaItem(
-                        mediaItem = movie,
-                        onClick = { gotoDetail(movie) }
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp)) // 하단 간격 추가
         }
     }
 }

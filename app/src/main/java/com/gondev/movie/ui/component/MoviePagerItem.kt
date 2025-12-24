@@ -78,7 +78,12 @@ fun MoviePagerItem(
                         )
                     }"
                 )
-                Text(movieModel.overview, overflow = TextOverflow.Ellipsis)
+                Text(
+                    movieModel.overview,
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }
