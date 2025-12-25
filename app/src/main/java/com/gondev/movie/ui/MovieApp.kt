@@ -11,6 +11,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.gondev.movie.navi.Route
+import com.gondev.movie.ui.common.dialog.MovieDialog
 import com.gondev.movie.ui.screen.DetailScreen
 import com.gondev.movie.ui.screen.home.HomeScreen
 
@@ -44,4 +45,6 @@ fun MovieApp(modifier: Modifier = Modifier) {
             },
         )
     }
+
+    MovieDialog()
 }

@@ -104,8 +104,15 @@ sealed class MovieDialogButton(
     val text: String,
     val onClick: () -> Unit
 ) {
-    class Cancel(text: String = "Cancel", onClick: () -> Unit) : MovieDialogButton(text, onClick)
-    class Ok(text: String = "Ok", onClick: () -> Unit) : MovieDialogButton(text, onClick)
+    class Cancel(text: String = "Cancel", onClick: () -> Unit) : MovieDialogButton(text, {
+        onClick()
+        MovieDialog.dismiss()
+    })
+
+    class Ok(text: String = "Ok", onClick: () -> Unit) : MovieDialogButton(text, {
+        onClick()
+        MovieDialog.dismiss()
+    })
 }
 
 @Composable

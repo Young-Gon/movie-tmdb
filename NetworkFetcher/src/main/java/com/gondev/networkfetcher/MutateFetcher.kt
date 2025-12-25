@@ -26,6 +26,7 @@ class MutateFetcher<P, R>(
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
+            e.printStackTrace()
             params.onError?.invoke(cachedData, e)
             emit(MutateResult.Error(_mutationTrigger, e, cachedData))
         }

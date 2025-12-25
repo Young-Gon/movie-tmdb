@@ -75,6 +75,13 @@ private fun SearchTab(
     val (keyword, setKeyword) = remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     fun onSearch() {
+        if ( keyword.isBlank()) {
+            MovieDialog.showDialog(
+                title = "검색어를 입력해 주세요",
+                onOk = MovieDialogButton.Ok {}
+            )
+            return
+        }
         searchState.fetch(keyword, onError = { _, _ ->
             MovieDialog.showDialog(
                 title = "네트워크 오류",
@@ -91,9 +98,9 @@ private fun SearchTab(
                 .fillMaxWidth()
                 .padding(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 focusedTextColor = MaterialTheme.colorScheme.surfaceVariant,
                 unfocusedTextColor = MaterialTheme.colorScheme.surface,
             ),
@@ -161,19 +168,22 @@ private fun SearchTab(
                         val list = if (page == 0) movies.results else tvShows.results
                         val lazyListState = if (page == 0) movieLazyListState else tvLazyListState
 
-                        LazyColumn(
-                            state = lazyListState,
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                            contentPadding = PaddingValues(vertical = 16.dp)
-                        ) {
-                            items(list) { item ->
-                                MediaItem(
-                                    mediaModel = item,
-                                    onClick = gotoDetail
-                                )
+                        if (list.isEmpty())
+                            ErrorScreen("검색 결과가 없습니다.")
+                        else
+                            LazyColumn(
+                                state = lazyListState,
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
+                                contentPadding = PaddingValues(vertical = 16.dp)
+                            ) {
+                                items(list) { item ->
+                                    MediaItem(
+                                        mediaModel = item,
+                                        onClick = gotoDetail
+                                    )
+                                }
                             }
-                        }
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package com.gondev.networkfetcher
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -36,7 +37,10 @@ class NetworkFetcher<R>(
         try {
             cachedData = api()
             emit(NetworkResult.Success(refreshTrigger, cachedData!!))
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(NetworkResult.Error(refreshTrigger, e, cachedData))
         }
     }
