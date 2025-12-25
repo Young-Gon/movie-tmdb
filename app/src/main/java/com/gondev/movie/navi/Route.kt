@@ -14,7 +14,7 @@ sealed interface Route : NavKey {
 }
 
 // 홈 화면 내부의 탭 정의
-sealed interface HomeTab {
+sealed interface HomeTab : NavKey {
     @Serializable
     data object Movie : HomeTab
 

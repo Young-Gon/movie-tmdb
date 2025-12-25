@@ -63,7 +63,12 @@ fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit)
                 // 1. Movie 탭
                 NavigationBarItem(
                     selected = currentTab is HomeTab.Movie,
-                    onClick = { if (currentTab !is HomeTab.Movie) tabBackstack[0] = HomeTab.Movie },
+                    onClick = {
+                        if (currentTab !is HomeTab.Movie) {
+                            tabBackstack.remove(HomeTab.Movie)
+                            tabBackstack.add(HomeTab.Movie)
+                        }
+                    },
                     icon = { Icon(Icons.Default.Movie, contentDescription = null) },
                     label = { Text("Movies") }
                 )
@@ -71,7 +76,10 @@ fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit)
                 NavigationBarItem(
                     selected = currentTab is HomeTab.TvShow,
                     onClick = {
-                        if (currentTab !is HomeTab.TvShow) tabBackstack[0] = HomeTab.TvShow
+                        if (currentTab !is HomeTab.TvShow) {
+                            tabBackstack.remove(HomeTab.TvShow)
+                            tabBackstack.add(HomeTab.TvShow)
+                        }
                     },
                     icon = { Icon(Icons.Default.Tv, contentDescription = null) },
                     label = { Text("TVs") }
@@ -80,7 +88,10 @@ fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit)
                 NavigationBarItem(
                     selected = currentTab is HomeTab.Search,
                     onClick = {
-                        if (currentTab !is HomeTab.Search) tabBackstack[0] = HomeTab.Search
+                        if (currentTab !is HomeTab.Search) {
+                            tabBackstack.remove(HomeTab.Search)
+                            tabBackstack.add(HomeTab.Search)
+                        }
                     },
                     icon = { Icon(Icons.Default.Search, contentDescription = null) },
                     label = { Text("Search") }
@@ -89,7 +100,7 @@ fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit)
         }) { innerPadding ->
         NavDisplay(
             backStack = tabBackstack,
-            onBack = { tabBackstack.removeLastOrNull() },
+            onBack = { tabBackstack.clear() },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
