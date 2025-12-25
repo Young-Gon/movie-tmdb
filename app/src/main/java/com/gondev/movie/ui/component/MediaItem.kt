@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.gondev.domain.model.IMediaModel
 import com.gondev.domain.model.MovieModel
+import com.gondev.movie.makeImgPath
 import com.gondev.movie.ui.theme.MovietmdbTheme
 
 @Composable
@@ -43,7 +44,7 @@ fun MediaItem(
                 .height(120.dp)
                 .aspectRatio(2f / 3f)
                 .clip(RoundedCornerShape(8.dp)),
-            model = mediaModel.posterPath,
+            model = makeImgPath(mediaModel.posterPath),
             contentDescription = "poster",
             placeholder = ColorPainter(Color.Gray),
             error = ColorPainter(Color.Gray)

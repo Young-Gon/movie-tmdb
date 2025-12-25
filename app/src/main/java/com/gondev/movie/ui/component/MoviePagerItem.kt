@@ -16,15 +16,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.gondev.domain.model.MovieModel
+import com.gondev.movie.makeImgPath
 import com.gondev.movie.ui.theme.MovietmdbTheme
 
 @Composable
@@ -39,8 +42,10 @@ fun MoviePagerItem(
         AsyncImage(
             modifier = Modifier
                 .fillMaxSize()
-                .blur(radius = 15.dp),
-            model = movieModel.backdropPath,
+                .blur(radius = 15.dp)
+                .alpha(0.6f),
+            model = makeImgPath(movieModel.backdropPath),
+            contentScale = ContentScale.FillWidth,
             contentDescription = "background",
             placeholder = ColorPainter(Color.Gray),
             error = ColorPainter(Color.Gray)
@@ -55,7 +60,7 @@ fun MoviePagerItem(
                     .fillMaxHeight()
                     .aspectRatio(2f / 3f)
                     .clip(RoundedCornerShape(8.dp)),
-                model = movieModel.posterPath,
+                model = makeImgPath(movieModel.posterPath),
                 contentDescription = "poster",
                 placeholder = ColorPainter(Color.Gray),
                 error = ColorPainter(Color.Gray)

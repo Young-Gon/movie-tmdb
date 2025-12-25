@@ -46,7 +46,7 @@ object NetworkModule {
     ): Retrofit {
         val contentType = "application/json".toMediaType()
         return Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org/3")
+            .baseUrl("https://api.themoviedb.org/3/")
             .client(okHttpClient)
             // Retrofit 3.0.0의 공식 kotlinx-serialization 컨버터 사용
             .addConverterFactory(json.asConverterFactory(contentType))

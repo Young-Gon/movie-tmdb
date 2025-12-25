@@ -10,7 +10,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    @GET("/movie/now_playing")
+    @GET("movie/now_playing")
     suspend fun getNowPlayingMovies(
         @Query("language")
         language: String = "ko-KR",
@@ -20,7 +20,7 @@ interface ApiService {
         region: String = "KR"
     ): PageContainer<Movie>
 
-    @GET("/movie/upcoming")
+    @GET("movie/upcoming")
     suspend fun getUpcomingMovies(
         @Query("language")
         language: String = "ko-KR",
@@ -30,7 +30,7 @@ interface ApiService {
         region: String = "KR"
     ): PageContainer<Movie>
 
-    @GET("/trending/movie/{time_window}")
+    @GET("trending/movie/{time_window}")
     suspend fun getMovieTrending(
         @Path("time_window")
         timeWindow: String = "week",
@@ -38,7 +38,7 @@ interface ApiService {
         language: String = "ko-KR",
     ): PageContainer<Movie>
 
-    @GET("/trending/tv/{time_window}")
+    @GET("trending/tv/{time_window}")
     suspend fun getTVTrending(
         @Path("time_window")
         timeWindow: String = "week",
@@ -46,7 +46,7 @@ interface ApiService {
         language: String = "ko-KR",
     ): PageContainer<TV>
 
-    @GET("/search/movie")
+    @GET("search/movie")
     suspend fun  getSearchMovie(
         @Query("query")
         query: String,
@@ -56,7 +56,7 @@ interface ApiService {
         region: String = "KR"
     ): PageContainer<Movie>
 
-    @GET("/search/tv")
+    @GET("search/tv")
     suspend fun  getSearchTV(
         @Query("query")
         query: String,
@@ -66,7 +66,7 @@ interface ApiService {
         region: String = "KR"
     ): PageContainer<TV>
 
-    @GET("/movie/{media_id}")
+    @GET("movie/{media_id}")
     suspend fun getMovieDetail(
         @Path("media_id")
         mediaId: Long,
@@ -76,7 +76,7 @@ interface ApiService {
         language: String = "ko-KR",
     ): MovieDetail
 
-    @GET("/tv/{media_id}")
+    @GET("tv/{media_id}")
     suspend fun getTvDetail(
         @Path("media_id")
         mediaId: Long,
@@ -86,7 +86,7 @@ interface ApiService {
         language: String = "ko-KR",
     ): TVDetail
 
-    @GET("/tv/airing_today")
+    @GET("tv/airing_today")
     suspend fun getAiringToday(
         @Query("language")
         language: String = "ko-KR",
@@ -96,7 +96,7 @@ interface ApiService {
         timeZone: String = "Asia/Seoul"
     ): PageContainer<TV>
 
-    @GET("/tv/popular")
+    @GET("tv/popular")
     suspend fun getTopRatedTVs(
         @Query("language")
         language: String = "ko-KR",

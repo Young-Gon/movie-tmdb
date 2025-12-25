@@ -1,9 +1,16 @@
 package com.gondev.movie.ui.screen.home.tabs
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,11 +21,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
@@ -36,8 +46,10 @@ import com.gondev.movie.ui.common.ErrorScreen
 import com.gondev.movie.ui.common.LoadingScreen
 import com.gondev.movie.ui.common.dialog.MovieDialog
 import com.gondev.movie.ui.common.dialog.MovieDialogButton
+import com.gondev.movie.ui.component.MediaItem
 import com.gondev.movie.ui.theme.MovietmdbTheme
 import com.gondev.networkfetcher.MutateResult
+import kotlinx.coroutines.launch
 
 @Composable
 fun SearchTab(
@@ -112,10 +124,59 @@ private fun SearchTab(
             }
 
             is MutateResult.Loading -> LoadingScreen()
-            is MutateResult.Error -> ErrorScreen("데이터를 불러오는 데 실패했습니다."){
+            is MutateResult.Error -> ErrorScreen("데이터를 불러오는 데 실패했습니다.") {
                 searchState.fetch(keyword)
             }
-            is MutateResult.Success -> TODO()
+
+            is MutateResult.Success -> {
+                val (movies, tvShows) = searchState.data
+                val pagerState = rememberPagerState { 2 }
+                val coroutineScope = rememberCoroutineScope()
+
+                // 각 탭의 스크롤 위치를 기억하기 위한 상태 추가
+                val movieLazyListState = rememberLazyListState()
+                val tvLazyListState = rememberLazyListState()
+
+                Column(modifier = Modifier.fillMaxSize()) {
+                    SecondaryTabRow(selectedTabIndex = pagerState.currentPage) {
+                        Tab(
+                            selected = pagerState.currentPage == 0,
+                            onClick = {
+                                coroutineScope.launch { pagerState.animateScrollToPage(0) }
+                            },
+                            text = { Text("Movie") }
+                        )
+                        Tab(
+                            selected = pagerState.currentPage == 1,
+                            onClick = {
+                                coroutineScope.launch { pagerState.animateScrollToPage(1) }
+                            },
+                            text = { Text("TV") }
+                        )
+                    }
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.weight(1f)
+                    ) { page ->
+                        val list = if (page == 0) movies.results else tvShows.results
+                        val lazyListState = if (page == 0) movieLazyListState else tvLazyListState
+
+                        LazyColumn(
+                            state = lazyListState,
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            contentPadding = PaddingValues(vertical = 16.dp)
+                        ) {
+                            items(list) { item ->
+                                MediaItem(
+                                    mediaModel = item,
+                                    onClick = gotoDetail
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

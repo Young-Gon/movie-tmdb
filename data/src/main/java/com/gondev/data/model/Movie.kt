@@ -24,6 +24,7 @@ data class Movie(
     val voteCount: Int = 0,
     @SerialName("original_title")
     val originalTitle: String = "",
+    @SerialName("release_date")
     val releaseDate: String = "",
     val title: String = "",
     val video: Boolean = false
