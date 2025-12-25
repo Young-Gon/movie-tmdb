@@ -32,6 +32,10 @@ import com.gondev.domain.model.IMediaModel
 import com.gondev.domain.model.MovieModel
 import com.gondev.domain.model.PageContainer
 import com.gondev.domain.model.TVModel
+import com.gondev.movie.ui.common.ErrorScreen
+import com.gondev.movie.ui.common.LoadingScreen
+import com.gondev.movie.ui.common.dialog.MovieDialog
+import com.gondev.movie.ui.common.dialog.MovieDialogButton
 import com.gondev.movie.ui.theme.MovietmdbTheme
 import com.gondev.networkfetcher.MutateResult
 
@@ -59,9 +63,13 @@ private fun SearchTab(
     val (keyword, setKeyword) = remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     fun onSearch() {
-        searchState.fetch(keyword,){
-
-        }
+        searchState.fetch(keyword, onError = { _, _ ->
+            MovieDialog.showDialog(
+                title = "네트워크 오류",
+                body = "네트워크 상태를 확인 하세요",
+                onOk = MovieDialogButton.Ok("확인") {}
+            )
+        })
         keyboardController?.hide()
     }
 
@@ -98,6 +106,17 @@ private fun SearchTab(
                 onSearch = { onSearch() }
             )
         )
+
+        when (searchState) {
+            is MutateResult.Idle -> { /* DO NOTHING */
+            }
+
+            is MutateResult.Loading -> LoadingScreen()
+            is MutateResult.Error -> ErrorScreen("데이터를 불러오는 데 실패했습니다."){
+                searchState.fetch(keyword)
+            }
+            is MutateResult.Success -> TODO()
+        }
     }
 }
 
