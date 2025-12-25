@@ -9,5 +9,5 @@ interface TVRepository {
     suspend fun getAiringToday(): PageContainer<TVModel>
     suspend fun getTopRatedTVs(): PageContainer<TVModel>
     suspend fun getSearch(query: String): PageContainer<TVModel>
-    suspend fun getDetail(mediaId: Long): TVDetailModel
+    suspend fun getDetail(mediaId: Int): TVDetailModel
 }

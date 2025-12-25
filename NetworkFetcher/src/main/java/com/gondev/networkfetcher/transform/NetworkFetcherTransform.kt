@@ -26,7 +26,7 @@ class NetworkFetcherTransformPair<R1, R2>(
 ) {
     private val refreshTrigger = MutableSharedFlow<Unit>(replay = 1)
 
-    val flow: Flow<NetworkResult<Pair<R1?,R2?>>> = channelFlow {
+    val flow: Flow<NetworkResult<Pair<R1?, R2?>>> = channelFlow {
         var result1: NetworkResult<out R1>? = null
         var result2: NetworkResult<out R2>? = null
 
@@ -36,7 +36,7 @@ class NetworkFetcherTransformPair<R1, R2>(
 
             // 로딩 상태 처리: 두 플로우 중 하나라도 값을 보내지 않았거나, 로딩 중일 때
             if (f1 == null || f2 == null || f1 is NetworkResult.Loading || f2 is NetworkResult.Loading) {
-                trySend(NetworkResult.Loading(refreshTrigger, Pair(f1?.data, f2?.data)))
+                trySend(NetworkResult.Loading(Pair(f1?.data, f2?.data), refreshTrigger))
                 return
             }
 
@@ -46,12 +46,12 @@ class NetworkFetcherTransformPair<R1, R2>(
             f2.hasException { if (exception == null) exception = it }
 
             if (exception != null) {
-                trySend(NetworkResult.Error(refreshTrigger, exception, Pair(f1.data, f2.data)))
+                trySend(NetworkResult.Error(exception, Pair(f1.data, f2.data), refreshTrigger))
                 return
             }
-            
+
             // 성공 상태 처리
-            trySend(NetworkResult.Success(refreshTrigger, Pair(f1.data, f2.data)))
+            trySend(NetworkResult.Success(Pair(f1.data, f2.data), refreshTrigger))
         }
 
         // refreshTrigger가 호출되면 원본 플로우들의 refresh를 호출
@@ -61,7 +61,7 @@ class NetworkFetcherTransformPair<R1, R2>(
                 result2?.refresh()
             }
         }
-        
+
         // 각 플로우의 결과를 수신하고 결합된 결과를 전송
         launch {
             fetcher1.collect {
@@ -79,4 +79,5 @@ class NetworkFetcherTransformPair<R1, R2>(
     }
 }
 
-operator fun <R1, R2> Flow<NetworkResult<out R1>>.plus(other: Flow<NetworkResult<out R2>>) = NetworkFetcherTransformPair(this, other).flow
+operator fun <R1, R2> Flow<NetworkResult<out R1>>.plus(other: Flow<NetworkResult<out R2>>) =
+    NetworkFetcherTransformPair(this, other).flow

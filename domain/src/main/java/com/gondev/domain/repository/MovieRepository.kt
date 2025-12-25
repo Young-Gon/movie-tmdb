@@ -9,5 +9,5 @@ interface MovieRepository {
     suspend fun getUpcomingMovies(): PageContainer<MovieModel>
     suspend fun getTrendingMovie(): PageContainer<MovieModel>
     suspend fun getSearch(query: String): PageContainer<MovieModel>
-    suspend fun getDetail(mediaId: Long): MovieDetailModel
+    suspend fun getDetail(mediaId: Int): MovieDetailModel
 }

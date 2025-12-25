@@ -32,16 +32,16 @@ class NetworkFetcher<R>(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val flow = refreshTrigger.transformLatest {
-        emit(NetworkResult.Loading(refreshTrigger, cachedData))
+        emit(NetworkResult.Loading(cachedData, refreshTrigger))
 
         try {
             cachedData = api()
-            emit(NetworkResult.Success(refreshTrigger, cachedData!!))
+            emit(NetworkResult.Success(cachedData!!, refreshTrigger))
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             e.printStackTrace()
-            emit(NetworkResult.Error(refreshTrigger, e, cachedData))
+            emit(NetworkResult.Error(e, cachedData, refreshTrigger))
         }
     }
 }

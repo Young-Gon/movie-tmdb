@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -13,6 +14,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.gondev.movie.navi.Route
 import com.gondev.movie.ui.common.dialog.MovieDialog
 import com.gondev.movie.ui.screen.DetailScreen
+import com.gondev.movie.ui.screen.DetailViewModel
 import com.gondev.movie.ui.screen.home.HomeScreen
 
 @Composable
@@ -35,11 +37,17 @@ fun MovieApp(modifier: Modifier = Modifier) {
                     }
                 }
                 entry<Route.Detail> { key ->
+                    val viewModel = hiltViewModel<DetailViewModel, DetailViewModel.Factory>(
+                        creationCallback = { factory ->
+                            factory.create(key.mediaModel)
+                        }
+                    )
                     DetailScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
-                        id = key.mediaModel
+                        viewModel = viewModel,
+                        onBack = appBackstack::removeLastOrNull
                     )
                 }
             },

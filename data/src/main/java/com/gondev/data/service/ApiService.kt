@@ -69,7 +69,7 @@ interface ApiService {
     @GET("movie/{media_id}")
     suspend fun getMovieDetail(
         @Path("media_id")
-        mediaId: Long,
+        mediaId: Int,
         @Query("append_to_response")
         appendToResponse: String = "videos",
         @Query("language")
@@ -79,7 +79,7 @@ interface ApiService {
     @GET("tv/{media_id}")
     suspend fun getTvDetail(
         @Path("media_id")
-        mediaId: Long,
+        mediaId: Int,
         @Query("append_to_response")
         appendToResponse: String = "videos",
         @Query("language")

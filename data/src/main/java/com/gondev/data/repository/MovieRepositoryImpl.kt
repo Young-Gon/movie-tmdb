@@ -19,6 +19,6 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun getSearch(query: String) =
         apiService.getSearchMovie(query).toDomain { it.toDomain() }
 
-    override suspend fun getDetail(mediaId: Long) =
+    override suspend fun getDetail(mediaId: Int) =
         apiService.getMovieDetail(mediaId).toDomain()
 }

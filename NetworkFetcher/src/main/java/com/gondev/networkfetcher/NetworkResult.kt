@@ -8,23 +8,19 @@ sealed class NetworkResult<T>(
     abstract val data: T?
 
     class Loading<T>(
-        refreshTrigger: MutableSharedFlow<Unit> = MutableSharedFlow(1),
-        override val data: T? = null
+        override val data: T? = null,
+        refreshTrigger: MutableSharedFlow<Unit> = MutableSharedFlow(1)
     ) : NetworkResult<T>(refreshTrigger)
 
     class Success<T>(
-        refreshTrigger: MutableSharedFlow<Unit> = MutableSharedFlow(1),
-        override val data: T
-    ) : NetworkResult<T>(refreshTrigger) {
-        override fun <R> hasData(block: (data: T) -> R): R {
-            return block(data)
-        }
-    }
+        override val data: T,
+        refreshTrigger: MutableSharedFlow<Unit> = MutableSharedFlow(1)
+    ) : NetworkResult<T>(refreshTrigger)
 
     class Error<T>(
-        refreshTrigger: MutableSharedFlow<Unit> = MutableSharedFlow(1),
         val exception: Exception,
-        override val data: T? = null
+        override val data: T? = null,
+        refreshTrigger: MutableSharedFlow<Unit> = MutableSharedFlow(1)
     ) : NetworkResult<T>(refreshTrigger) {
         override fun hasException(block: (Exception) -> Unit) {
             block(exception)
@@ -37,13 +33,13 @@ sealed class NetworkResult<T>(
 
     fun copy(data: T?): NetworkResult<T> {
         return when (this) {
-            is Loading -> Loading(refreshTrigger, data)
-            is Success -> Success(refreshTrigger, data!!)
-            is Error -> Error(refreshTrigger, exception, data)
+            is Loading -> Loading(data, refreshTrigger)
+            is Success -> Success(data!!, refreshTrigger)
+            is Error -> Error(exception, data, refreshTrigger)
         }
     }
 
-    open fun <R> hasData(block: (data: T) -> R): R? {
+    inline fun <R> hasData(block: (data: T) -> R): R? {
         return data?.let(block)
     }
 

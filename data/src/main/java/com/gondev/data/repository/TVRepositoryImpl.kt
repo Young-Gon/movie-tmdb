@@ -19,6 +19,6 @@ class TVRepositoryImpl @Inject constructor(
     override suspend fun getSearch(query: String) =
         apiService.getSearchTV(query).toDomain { it.toDomain() }
 
-    override suspend fun getDetail(mediaId: Long) =
+    override suspend fun getDetail(mediaId: Int) =
         apiService.getTvDetail( mediaId).toDomain()
 }
