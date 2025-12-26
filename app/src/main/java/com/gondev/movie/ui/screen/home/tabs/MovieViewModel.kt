@@ -16,7 +16,7 @@ class MovieViewModel @Inject constructor(
 
     val movieFeed = getMovieFeedUseCase().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Lazily,
         initialValue = NetworkResult.Loading()
     )
 }

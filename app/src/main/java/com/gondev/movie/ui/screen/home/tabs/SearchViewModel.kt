@@ -15,7 +15,7 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
     val search = searchMediaUseCase().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Lazily,
         initialValue = MutateResult.Idle()
     )
 }
