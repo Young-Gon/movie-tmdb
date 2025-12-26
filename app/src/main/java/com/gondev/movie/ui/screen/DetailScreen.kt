@@ -1,5 +1,6 @@
 package com.gondev.movie.ui.screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,6 +62,7 @@ fun DetailScreen(
     detail: NetworkResult<out IMediaModel>,
     onBack: () -> Unit,
 ) {
+    val uriHandler = LocalUriHandler.current
 
     detail.hasData { detail ->
         Column(modifier.fillMaxSize()) {
@@ -160,7 +163,9 @@ fun DetailScreen(
                     )
                     for (video in detail.videos) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().clickable{
+                                uriHandler.openUri("https://www.youtube.com/watch?v=${video.key}")
+                            },
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ){
                             Icon(Icons.Filled.PlayCircle, "Video")
