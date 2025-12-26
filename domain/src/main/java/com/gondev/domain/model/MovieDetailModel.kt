@@ -21,7 +21,7 @@ data class MovieDetailModel(
     override val originalTitle: String,
     override val voteAverage: Double,
     override val voteCount: Int,
-    val belongsToCollection: String?,
+    val belongsToCollection: BelongsToCollection?,
     val budget: Long,
     val imdbId: String?,
     val revenue: Long,

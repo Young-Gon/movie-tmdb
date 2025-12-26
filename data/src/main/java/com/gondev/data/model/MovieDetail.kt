@@ -3,6 +3,7 @@ package com.gondev.data.model
 import com.gondev.domain.model.MovieDetailModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import com.gondev.domain.model.BelongsToCollection as DomainBelongsToCollection
 import com.gondev.domain.model.Genre as DomainGenre
 import com.gondev.domain.model.ProductionCompany as DomainProductionCompany
 import com.gondev.domain.model.ProductionCountry as DomainProductionCountry
@@ -16,7 +17,7 @@ data class MovieDetail(
     @SerialName("backdrop_path")
     val backdropPath: String? = null, // null이 될 수 있으므로 nullable
     @SerialName("belongs_to_collection")
-    val belongsToCollection: String? = null, // null이 될 수 있고, 객체이므로 별도 data class
+    val belongsToCollection: BelongsToCollection? = null, // null이 될 수 있고, 객체이므로 별도 data class
     val budget: Long = 0, // 예산은 큰 숫자이므로 Long으로
     val genres: List<Genre> = emptyList(), // 리스트이므로 List<Genre>
     val homepage: String? = null, // null이 될 수 있으므로 nullable
@@ -44,7 +45,7 @@ data class MovieDetail(
     val status: String = "",
     val tagline: String? = null, // null이 될 수 있으므로 nullable
     val title: String = "",
-    val videos: List<Video> = emptyList(),
+    val videos: VideoResult = VideoResult(),
     @SerialName("vote_average")
     val voteAverage: Double = 0.0,
     @SerialName("vote_count")
@@ -53,7 +54,7 @@ data class MovieDetail(
     fun toDomain(): MovieDetailModel = MovieDetailModel(
         adult = adult,
         backdropPath = backdropPath,
-        belongsToCollection = belongsToCollection,
+        belongsToCollection = belongsToCollection?.toDomain(),
         budget = budget,
         genres = genres.map { it.toDomain() },
         homepage = homepage,
@@ -73,7 +74,7 @@ data class MovieDetail(
         status = status,
         tagline = tagline ?: "",
         title = title,
-        videos = videos.map { it.toDomain() },
+        videos = videos.results.map { it.toDomain() },
         voteAverage= voteAverage,
         voteCount = voteCount
     )
@@ -120,6 +121,23 @@ data class ProductionCountry(
 }
 
 @Serializable
+data class BelongsToCollection(
+    val id: Int = 0,
+    val name: String = "",
+    @SerialName("poster_path")
+    val posterPath: String? = null,
+    @SerialName("backdrop_path")
+    val backdropPath: String? = null
+) {
+    fun toDomain(): DomainBelongsToCollection = DomainBelongsToCollection(
+        id = id,
+        name = name,
+        posterPath = posterPath,
+        backdropPath = backdropPath
+    )
+}
+
+@Serializable
 data class SpokenLanguage(
     @SerialName("english_name")
     val englishName: String = "",
@@ -133,6 +151,12 @@ data class SpokenLanguage(
         name = name
     )
 }
+
+@Serializable
+data class VideoResult(
+    val id: Int = 0,
+    val results: List<Video> = emptyList()
+)
 
 @Serializable
 data class Video (

@@ -62,7 +62,7 @@ data class TVDetail(
     val voteAverage: Double = 0.0,
     @SerialName("vote_count")
     val voteCount: Int = 0,
-    val videos: List<Video> = emptyList(),
+    val videos: VideoResult = VideoResult(),
 ) {
     fun toDomain() = TVDetailModel(
         adult = adult,
@@ -95,7 +95,7 @@ data class TVDetail(
         type = type,
         voteAverage = voteAverage,
         voteCount = voteCount,
-        videos = videos.map { it.toDomain() },
+        videos = videos.results.map { it.toDomain() },
         title = name,
         releaseDate = firstAirDate,
     )

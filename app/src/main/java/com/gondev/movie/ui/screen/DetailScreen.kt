@@ -8,11 +8,15 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,9 +35,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.gondev.domain.model.IMediaModel
+import com.gondev.domain.model.IMedialDetail
 import com.gondev.domain.model.IMovieModel
 import com.gondev.domain.model.MovieDetailModel
 import com.gondev.domain.model.MovieModel
@@ -72,7 +78,7 @@ fun DetailScreen(
                     }
                 }
             )
-            Box {
+            Box(modifier = Modifier.fillMaxWidth().height(180.dp)) {
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxSize()
@@ -105,10 +111,29 @@ fun DetailScreen(
                             .padding(start = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(
                             8.dp,
-                            Alignment.CenterVertically
+                            Alignment.Bottom
                         )
                     ) {
-                        Text(detail.title)
+                        Text(
+                            detail.title,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Text(
+                            if (detail !is IMedialDetail || detail.productionCompanies.isEmpty())
+                                ""
+                            else
+                                detail.productionCompanies[0].name + if (detail.productionCompanies.size > 1) {
+                                    " 외 ${detail.productionCompanies.size - 1}개"
+                                } else {
+                                    ""
+                                }
+                        )
+                        Text(
+                            if (detail !is IMedialDetail || detail.genres.isEmpty())
+                                ""
+                            else
+                                detail.genres.joinToString(", ") { it.name }
+                        )
                         Text(
                             "${detail.releaseDate} ⭐ ${
                                 if (detail is MovieModel)
@@ -119,12 +144,30 @@ fun DetailScreen(
                                 else ""
                             }"
                         )
-                        Text(
-                            detail.overview,
+                    }
+                }
+            }
+            if (detail is IMedialDetail) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Text("시놉시스", fontSize = 16.sp)
+                    Text(
+                        detail.overview,
+                        modifier = Modifier.fillMaxWidth(),
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    for (video in detail.videos) {
+                        Row(
                             modifier = Modifier.fillMaxWidth(),
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ){
+                            Icon(Icons.Filled.PlayCircle, "Video")
+                            Text(video.name)
+                        }
                     }
                 }
             }
