@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -42,7 +41,6 @@ fun MoviePagerItem(
         AsyncImage(
             modifier = Modifier
                 .fillMaxSize()
-                .blur(radius = 15.dp)
                 .alpha(0.6f),
             model = makeImgPath(movieModel.backdropPath),
             contentScale = ContentScale.FillWidth,

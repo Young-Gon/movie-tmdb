@@ -2,8 +2,6 @@ package com.gondev.movie.ui.screen.home
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Search
@@ -18,32 +16,45 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import com.gondev.domain.model.IMediaModel
+import com.gondev.movie.navi.HomeTab
 import com.gondev.movie.ui.screen.home.tabs.MovieTab
 import com.gondev.movie.ui.screen.home.tabs.SearchTab
 import com.gondev.movie.ui.screen.home.tabs.TVTab
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit) {
-    val pagerState = rememberPagerState(pageCount = { 3 })
-    val coroutineScope = rememberCoroutineScope()
-
+    var tabBackstack by rememberSaveable() {
+        mutableStateOf(
+            listOf<HomeTab>(
+                HomeTab.Search,
+                HomeTab.TvShow,
+                HomeTab.Movie
+            )
+        )
+    }
+    val currentTab = tabBackstack.last()
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             // 상단 헤더 추가
             CenterAlignedTopAppBar(
                 title = {
-                    val titleText = when (pagerState.currentPage) {
-                        0 -> "Movies"
-                        1 -> "TV Shows"
-                        2 -> "Search"
-                        else -> ""
+                    val titleText = when (currentTab) {
+                        is HomeTab.Movie -> "Movies"
+                        is HomeTab.TvShow -> "TV Shows"
+                        is HomeTab.Search -> "Search"
                     }
                     Text(
                         text = titleText,
@@ -61,10 +72,16 @@ fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit)
             NavigationBar {
                 // 1. Movie 탭
                 NavigationBarItem(
-                    selected = pagerState.currentPage == 0,
+                    selected = currentTab is HomeTab.Movie,
                     onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(0)
+                        if (currentTab !is HomeTab.Movie) {
+                            tabBackstack =
+                                listOf(
+                                    HomeTab.Search,
+                                    HomeTab.TvShow,
+                                    HomeTab.Movie
+                                )
+
                         }
                     },
                     icon = { Icon(Icons.Default.Movie, contentDescription = null) },
@@ -72,10 +89,16 @@ fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit)
                 )
                 // 2. TV 탭
                 NavigationBarItem(
-                    selected = pagerState.currentPage == 1,
+                    selected = currentTab is HomeTab.TvShow,
                     onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(1)
+                        if (currentTab !is HomeTab.TvShow) {
+                            tabBackstack =
+                                listOf(
+                                    HomeTab.Search,
+                                    HomeTab.Movie,
+                                    HomeTab.TvShow
+                                )
+
                         }
                     },
                     icon = { Icon(Icons.Default.Tv, contentDescription = null) },
@@ -83,10 +106,16 @@ fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit)
                 )
                 // 3. 검색 탭
                 NavigationBarItem(
-                    selected = pagerState.currentPage == 2,
+                    selected = currentTab is HomeTab.Search,
                     onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(2)
+                        if (currentTab !is HomeTab.Search) {
+                            tabBackstack =
+                                listOf(
+                                    HomeTab.TvShow,
+                                    HomeTab.Movie,
+                                    HomeTab.Search
+                                )
+
                         }
                     },
                     icon = { Icon(Icons.Default.Search, contentDescription = null) },
@@ -94,19 +123,21 @@ fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit)
                 )
             }
         }) { innerPadding ->
-        HorizontalPager(
-            state = pagerState,
+        NavDisplay(
+            backStack = tabBackstack,
+            onBack = { tabBackstack = emptyList() },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            beyondViewportPageCount = 2, // 모든 탭을 메모리에 유지
-            userScrollEnabled = false    // 스와이프를 막고 싶을 때
-        ) { page ->
-            when (page) {
-                0 -> MovieTab(gotoDetail = gotoDetail)
-                1 -> TVTab(gotoDetail = gotoDetail)
-                2 -> SearchTab(gotoDetail = gotoDetail)
-            }
-        }
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator(),
+            ),
+            entryProvider = entryProvider {
+                entry<HomeTab.Movie> { MovieTab(gotoDetail = gotoDetail) }
+                entry<HomeTab.TvShow> { TVTab(gotoDetail = gotoDetail) }
+                entry<HomeTab.Search> { SearchTab(gotoDetail = gotoDetail) }
+            },
+        )
     }
 }
