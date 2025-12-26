@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,11 +33,14 @@ fun MediaItem(
     mediaModel: IMediaModel,
     onClick: (IMediaModel) -> Unit
 ) {
+    val posterPath = remember(mediaModel.posterPath) { makeImgPath(mediaModel.posterPath) }
+    val onMediaClick = remember(mediaModel, onClick) { { onClick(mediaModel) } }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .clickable(onClick = { onClick(mediaModel) }),
+            .clickable(onClick = onMediaClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -44,7 +48,7 @@ fun MediaItem(
                 .height(120.dp)
                 .aspectRatio(2f / 3f)
                 .clip(RoundedCornerShape(8.dp)),
-            model = makeImgPath(mediaModel.posterPath),
+            model = posterPath,
             contentDescription = "poster",
             placeholder = ColorPainter(Color.Gray),
             error = ColorPainter(Color.Gray)

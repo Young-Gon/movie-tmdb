@@ -1,5 +1,6 @@
 package com.gondev.movie.ui.screen.home.tabs
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +26,7 @@ import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -72,6 +74,10 @@ private fun SearchTab(
     searchState: MutateResult<String, Pair<PageContainer<MovieModel>, PageContainer<TVModel>>>,
     gotoDetail: (IMediaModel) -> Unit
 ) {
+    Log.v("tab", "search")
+    LaunchedEffect(Unit) {
+        Log.d("tab", "create search")
+    }
     val (keyword, setKeyword) = remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     fun onSearch() {
@@ -92,7 +98,7 @@ private fun SearchTab(
         keyboardController?.hide()
     }
 
-    Column(modifier = modifier) {
+    Column(modifier = modifier.fillMaxSize()) {
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -177,7 +183,7 @@ private fun SearchTab(
                                 verticalArrangement = Arrangement.spacedBy(16.dp),
                                 contentPadding = PaddingValues(vertical = 16.dp)
                             ) {
-                                items(list) { item ->
+                                items(list, key = { it.id }) { item ->
                                     MediaItem(
                                         mediaModel = item,
                                         onClick = gotoDetail

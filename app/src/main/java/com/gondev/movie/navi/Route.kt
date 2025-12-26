@@ -12,15 +12,3 @@ sealed interface Route : NavKey {
     @Serializable
     data class Detail(val mediaModel: IMediaModel) : Route  // 상세 페이지 (전체 화면)
 }
-
-// 홈 화면 내부의 탭 정의
-sealed interface HomeTab : NavKey {
-    @Serializable
-    data object Movie : HomeTab
-
-    @Serializable
-    data object TvShow : HomeTab
-
-    @Serializable
-    data object Search : HomeTab
-}

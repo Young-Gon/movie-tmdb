@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -29,17 +30,20 @@ fun SimpleMediaItem(
     mediaItem: IMediaModel,
     onClick: (IMediaModel) -> Unit = {}
 ) {
+    val posterPath = remember(mediaItem.posterPath) { makeImgPath(mediaItem.posterPath) }
+    val onMediaClick = remember(mediaItem, onClick) { { onClick(mediaItem) } }
+
     Column(
         modifier = modifier
             .width(100.dp)
-            .clickable(onClick = { onClick(mediaItem) }),
+            .clickable(onClick = onMediaClick),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         AsyncImage(
             modifier = Modifier
                 .aspectRatio(2f / 3f)
                 .clip(RoundedCornerShape(8.dp)),
-            model = makeImgPath(mediaItem.posterPath),
+            model = posterPath,
             contentDescription = "poster",
             placeholder = ColorPainter(Color.Gray),
             error = ColorPainter(Color.Gray)

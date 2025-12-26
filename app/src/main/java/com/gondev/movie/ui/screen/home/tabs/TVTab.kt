@@ -1,5 +1,6 @@
 package com.gondev.movie.ui.screen.home.tabs
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -80,6 +81,10 @@ private fun TvTab(
     trending: PageContainer<TVModel>
 ) {
 
+    Log.v("tab", "tv")
+    LaunchedEffect(Unit) {
+        Log.d("tab", "crate TV tab")
+    }
     var isRefreshing by remember { mutableStateOf(false) }
     LaunchedEffect(isLoading) {
         if (!isLoading)
@@ -116,7 +121,7 @@ private fun TvTab(
                     contentPadding = PaddingValues(horizontal = 16.dp), // 좌우 패딩
                     horizontalArrangement = Arrangement.spacedBy(8.dp) // 아이템 간 간격
                 ) {
-                    items(airingToday.results) { tVModel ->
+                    items(airingToday.results, key = { it.id }) { tVModel ->
                         SimpleMediaItem(
                             mediaItem = tVModel,
                             onClick = { gotoDetail(tVModel) }
@@ -136,7 +141,7 @@ private fun TvTab(
                     contentPadding = PaddingValues(horizontal = 16.dp), // 좌우 패딩
                     horizontalArrangement = Arrangement.spacedBy(8.dp) // 아이템 간 간격
                 ) {
-                    items(topRateTv.results) { tVModel ->
+                    items(topRateTv.results, key = { it.id }) { tVModel ->
                         SimpleMediaItem(
                             mediaItem = tVModel,
                             onClick = { gotoDetail(tVModel) }
@@ -156,7 +161,7 @@ private fun TvTab(
                     contentPadding = PaddingValues(horizontal = 16.dp), // 좌우 패딩
                     horizontalArrangement = Arrangement.spacedBy(8.dp) // 아이템 간 간격
                 ) {
-                    items(trending.results) { tVModel ->
+                    items(trending.results, key = { it.id }) { tVModel ->
                         SimpleMediaItem(
                             mediaItem = tVModel,
                             onClick = { gotoDetail(tVModel) }

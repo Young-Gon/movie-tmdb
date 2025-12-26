@@ -1,5 +1,6 @@
 package com.gondev.movie.ui.screen.home.tabs
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -83,6 +84,10 @@ private fun MovieTab(
     upcoming: PageContainer<MovieModel>,
     trending: PageContainer<MovieModel>
 ) {
+    Log.v("tab", "movie tab")
+    LaunchedEffect(Unit) {
+        Log.d("tab", "create movie tab")
+    }
     var isRefreshing by remember { mutableStateOf(false) }
     LaunchedEffect(isLoading) {
         if (!isLoading)
@@ -152,7 +157,7 @@ private fun MovieTab(
                     )
                 }
 
-                items(nowPlaying.results) { movie ->
+                items(nowPlaying.results, key = { it.id }) { movie ->
                     MediaItem(
                         mediaModel = movie,
                         onClick = { gotoDetail(movie) }
