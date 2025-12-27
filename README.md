@@ -63,10 +63,13 @@
 - **몰입형 UI:** 배경에 백드롭 이미지를 적용하여 시각적 완성도를 높였습니다. (성능을 위해 실시간 Blur 대신 투명도 최적화 적용)
 - **정보 제공:** 포스터, 제목, 평점, 장르, 제작사, 시놉시스 등 상세 정보를 표시합니다.
 - **관련 영상:** 예고편 등의 관련 비디오 리스트를 제공합니다.
-  ![movie-tab](./screenshot/tab-detail.png)
+
+![movie-tab](./screenshot/tab-detail.png)
 ### 3. 검색 (Search)
 
 - 키워드를 통해 영화 및 TV 프로그램을 검색할 수 있는 기능을 제공합니다.
+
+https://github.com/user-attachments/assets/f1e1467e-fe13-4a74-ab65-6f0517bc2977
 
 ---
 
