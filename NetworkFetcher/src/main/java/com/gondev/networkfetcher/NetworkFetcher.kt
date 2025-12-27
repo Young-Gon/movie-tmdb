@@ -11,6 +11,7 @@ class NetworkFetcher<R>(
     private val api: suspend FlowCollector<NetworkResult<R>>.() -> R,
 ) {
     private val refreshTrigger = MutableSharedFlow<Unit>(replay = 1)
+    private var isLoaded = false
 
     /*val flow = channelFlow {
         launch {
@@ -32,16 +33,23 @@ class NetworkFetcher<R>(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val flow = refreshTrigger.transformLatest {
-        emit(NetworkResult.Loading(cachedData, refreshTrigger))
+        if (isLoaded) return@transformLatest
+        emit(NetworkResult.Loading(cachedData, ::refresh))
 
         try {
             cachedData = api()
-            emit(NetworkResult.Success(cachedData!!, refreshTrigger))
+            isLoaded = true
+            emit(NetworkResult.Success(cachedData!!, ::refresh))
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             e.printStackTrace()
-            emit(NetworkResult.Error(e, cachedData, refreshTrigger))
+            emit(NetworkResult.Error(e, cachedData, ::refresh))
         }
+    }
+
+    fun refresh() {
+        isLoaded = false
+        refreshTrigger.tryEmit(Unit)
     }
 }

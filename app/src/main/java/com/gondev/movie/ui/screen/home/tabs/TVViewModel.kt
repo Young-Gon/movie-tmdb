@@ -16,7 +16,7 @@ class TVViewModel @Inject constructor(
 
     val tvFeed = getTVFeedUseCase().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Lazily,
+        started = SharingStarted.WhileSubscribed(5000),
         initialValue = NetworkResult.Loading()
     )
 }

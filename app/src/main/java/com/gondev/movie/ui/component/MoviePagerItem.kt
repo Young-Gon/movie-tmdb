@@ -1,5 +1,6 @@
 package com.gondev.movie.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -31,13 +33,20 @@ import com.gondev.movie.ui.theme.MovietmdbTheme
 
 @Composable
 fun MoviePagerItem(
-    modifier: Modifier = Modifier
-        .fillMaxWidth()
-        .height(150.dp),
+    modifier: Modifier = Modifier,
     movieModel: MovieModel,
     onClick: () -> Unit
 ) {
-    Box(modifier = modifier.clickable(onClick = onClick)) {
+    Log.v("Item", "MoviePagerItem: ${movieModel.title}")
+    LaunchedEffect(Unit) {
+        Log.d("Item", "create MoviePagerItem: ${movieModel.title}")
+    }
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(150.dp)
+            .clickable(onClick = onClick)
+    ) {
         AsyncImage(
             modifier = Modifier
                 .fillMaxSize()

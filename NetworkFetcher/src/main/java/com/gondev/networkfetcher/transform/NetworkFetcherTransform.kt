@@ -6,20 +6,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
 
-
-/*class NetworkFetcherTransform<R>(vararg fetcher: Flow<NetworkResult<out R>>) {
-
-    private val refreshTrigger = MutableSharedFlow<Unit>(replay = 1)
-    // private var cachedData: R? = null
-
-    val flow = combine(fetcher) { flows ->
-        if(flows.any { it is NetworkResult.Loading }){
-            return@combine NetworkResult.Loading(refreshTrigger)
-        }
-        NetworkResult.Success(refreshTrigger, flows.map { (it as NetworkResult.Success).data })
-    }
-}*/
-
 class NetworkFetcherTransformPair<R1, R2>(
     fetcher1: Flow<NetworkResult<out R1>>,
     fetcher2: Flow<NetworkResult<out R2>>
@@ -36,7 +22,7 @@ class NetworkFetcherTransformPair<R1, R2>(
 
             // 로딩 상태 처리: 두 플로우 중 하나라도 값을 보내지 않았거나, 로딩 중일 때
             if (f1 == null || f2 == null || f1 is NetworkResult.Loading || f2 is NetworkResult.Loading) {
-                trySend(NetworkResult.Loading(Pair(f1?.data, f2?.data), refreshTrigger))
+                trySend(NetworkResult.Loading(Pair(f1?.data, f2?.data), ::refresh))
                 return
             }
 
@@ -46,12 +32,15 @@ class NetworkFetcherTransformPair<R1, R2>(
             f2.hasException { if (exception == null) exception = it }
 
             if (exception != null) {
-                trySend(NetworkResult.Error(exception, Pair(f1.data, f2.data), refreshTrigger))
+                trySend(NetworkResult.Error(exception, Pair(f1.data, f2.data), ::refresh))
                 return
             }
 
             // 성공 상태 처리
-            trySend(NetworkResult.Success(Pair(f1.data, f2.data), refreshTrigger))
+            // f1.data와 f2.data가 null일 수 있으므로 Pair<R1?, R2?>를 생성합니다.
+            // NetworkResult.Success의 제네릭 타입 T는 Pair<R1?, R2?>입니다.
+            val combinedData = Pair(f1.data!!, f2.data!!)
+            trySend(NetworkResult.Success(combinedData, ::refresh))
         }
 
         // refreshTrigger가 호출되면 원본 플로우들의 refresh를 호출
@@ -76,6 +65,10 @@ class NetworkFetcherTransformPair<R1, R2>(
                 sendCombined()
             }
         }
+    }
+
+    fun refresh() {
+        refreshTrigger.tryEmit(Unit)
     }
 }
 

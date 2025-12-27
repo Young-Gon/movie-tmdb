@@ -1,41 +1,39 @@
 package com.gondev.networkfetcher
 
-import kotlinx.coroutines.flow.MutableSharedFlow
-
 sealed class NetworkResult<T>(
-    private val refreshTrigger: MutableSharedFlow<Unit>,
+    private val onRefresh: (() -> Unit)? = null,
 ) {
     abstract val data: T?
 
     class Loading<T>(
         override val data: T? = null,
-        refreshTrigger: MutableSharedFlow<Unit> = MutableSharedFlow(1)
-    ) : NetworkResult<T>(refreshTrigger)
+        onRefresh: (() -> Unit)? = null
+    ) : NetworkResult<T>(onRefresh)
 
     class Success<T>(
         override val data: T,
-        refreshTrigger: MutableSharedFlow<Unit> = MutableSharedFlow(1)
-    ) : NetworkResult<T>(refreshTrigger)
+        onRefresh: (() -> Unit)? = null
+    ) : NetworkResult<T>(onRefresh)
 
     class Error<T>(
         val exception: Exception,
         override val data: T? = null,
-        refreshTrigger: MutableSharedFlow<Unit> = MutableSharedFlow(1)
-    ) : NetworkResult<T>(refreshTrigger) {
+        onRefresh: (() -> Unit)? = null
+    ) : NetworkResult<T>(onRefresh) {
         override fun hasException(block: (Exception) -> Unit) {
             block(exception)
         }
     }
 
     fun refresh() {
-        refreshTrigger.tryEmit(Unit)
+        onRefresh?.invoke()
     }
 
     fun copy(data: T?): NetworkResult<T> {
         return when (this) {
-            is Loading -> Loading(data, refreshTrigger)
-            is Success -> Success(data!!, refreshTrigger)
-            is Error -> Error(exception, data, refreshTrigger)
+            is Loading -> Loading(data, onRefresh)
+            is Success -> Success(data!!, onRefresh)
+            is Error -> Error(exception, data, onRefresh)
         }
     }
 
