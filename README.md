@@ -90,6 +90,7 @@ https://github.com/user-attachments/assets/f1e1467e-fe13-4a74-ab65-6f0517bc2977
         - **간편한 refresh:** `NetworkResult` 객체의 `refresh()` 함수를 호출하여 데이터 갱신을 트리거합니다.
         - **데이터 유실 방지:** 로딩 중에도 `cachedData`를 유지하여 끊김 없는 UX를 제공합니다.
         - **상세 화면 최적화:** 이전 화면에서 받아온 데이터를 즉시 전달받아 로딩 지연 없이 상세 정보를 표시합니다.
+    > 상세 내용은 [Refresh 트리거를 캡슐화하여 API 상태관리와 새로고침을 간편하게 하기](https://yg1027.tistory.com/3) 참고
 
 4. **MutateFetcher를 사용한 인터랙션 처리**
     - 검색이나 데이터 수정과 같은 파라미터 동반 동작을 위해 `MutateFetcher`를 설계했습니다.
@@ -100,6 +101,7 @@ https://github.com/user-attachments/assets/f1e1467e-fe13-4a74-ab65-6f0517bc2977
           쉽습니다. *
           *([SearchViewModel](app/src/main/java/com/gondev/movie/ui/screen/home/tabs/SearchViewModel.kt)
           참고)**
+    > 상세 내용은 [Jetpack Compose에서 비동기 요청을 우아하게 관리하기: MutateFetcher](https://yg1027.tistory.com/5) 참고
 
 5. **Navigation 3과 통합된 Hilt DI**
     - `rememberViewModelStoreNavEntryDecorator`를 사용하여 내비게이션 각 경로마다 독립적인 `ViewModelStore`를 할당합니다.
