@@ -18,26 +18,32 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSerializable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.runtime.serialization.NavKeySerializer
 import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.compose.serialization.serializers.MutableStateSerializer
 import com.gondev.domain.model.IMediaModel
 import com.gondev.movie.navi.HomeTab
 import com.gondev.movie.ui.screen.home.tabs.MovieTab
 import com.gondev.movie.ui.screen.home.tabs.SearchTab
 import com.gondev.movie.ui.screen.home.tabs.TVTab
+import kotlinx.serialization.builtins.ListSerializer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, gotoDetail: (IMediaModel) -> Unit) {
-    var tabBackstack by rememberSaveable() {
+    // [NavKey]를 상속 받는 클레스는 rememberSaveable과 Parcelable 대신 다음과 같이
+    // rememberSerializable과 NavKeySerializer()을 사용해야 한다.
+    var tabBackstack by rememberSerializable(emptyList<HomeTab>(),
+        serializer = MutableStateSerializer(ListSerializer(NavKeySerializer()))) {
         mutableStateOf(
-            listOf<HomeTab>(
+            listOf(
                 HomeTab.Search,
                 HomeTab.TvShow,
                 HomeTab.Movie

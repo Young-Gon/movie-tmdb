@@ -90,7 +90,7 @@
         - **상태 추적:** `Idle`, `Loading`, `Success`, `Error` 상태를 추적하여 UI에 반영할 수 있습니다.
         - **사이드 이펙트 연결:** 요청 결과에 따라 `onSuccess`, `onError` 콜백을 지원하여 스낵바 출력이나 다이얼로그 표시 등을 간편하게 처리합니다.
         - **유지보수 간편성:** 이 모든 기능을 하나의 `MutateResult`로 처리 하기 때문에 `ViewModel`이 간단해 지고 유지 보수가
-          쉽습니다 [SearchViewModel][com.gondev.movie.ui.screen.home.tabs.SearchViewModel] 참고
+          쉽습니다. **([SearchViewModel](app/src/main/java/com/gondev/movie/ui/screen/home/tabs/SearchViewModel.kt) 참고)**
 
 5. **Navigation 3과 통합된 Hilt DI**
     - `rememberViewModelStoreNavEntryDecorator`를 사용하여 내비게이션 각 경로마다 독립적인 `ViewModelStore`를 할당합니다.
