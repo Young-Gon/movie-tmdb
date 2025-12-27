@@ -54,12 +54,16 @@
     - **Trending:** 가로 스크롤 가능한 트렌딩 배너 (`HorizontalPager`)
     - **Upcoming / Top Rated:** 가로 스크롤 리스트 (`LazyRow`)
 
+| Movie                                    | TV                                 | Search                                     |
+|:-----------------------------------------|:-----------------------------------|:-------------------------------------------|
+| ![movie-tab](./screenshot/tab-movie.png) | ![tv-tab](./screenshot/tab-tv.png) | ![search-tab](./screenshot/tab-search.png) |
+
 ### 2. 상세 화면 (Detail Screen)
 
 - **몰입형 UI:** 배경에 백드롭 이미지를 적용하여 시각적 완성도를 높였습니다. (성능을 위해 실시간 Blur 대신 투명도 최적화 적용)
 - **정보 제공:** 포스터, 제목, 평점, 장르, 제작사, 시놉시스 등 상세 정보를 표시합니다.
 - **관련 영상:** 예고편 등의 관련 비디오 리스트를 제공합니다.
-
+  ![movie-tab](./screenshot/tab-detail.png)
 ### 3. 검색 (Search)
 
 - 키워드를 통해 영화 및 TV 프로그램을 검색할 수 있는 기능을 제공합니다.
@@ -90,7 +94,9 @@
         - **상태 추적:** `Idle`, `Loading`, `Success`, `Error` 상태를 추적하여 UI에 반영할 수 있습니다.
         - **사이드 이펙트 연결:** 요청 결과에 따라 `onSuccess`, `onError` 콜백을 지원하여 스낵바 출력이나 다이얼로그 표시 등을 간편하게 처리합니다.
         - **유지보수 간편성:** 이 모든 기능을 하나의 `MutateResult`로 처리 하기 때문에 `ViewModel`이 간단해 지고 유지 보수가
-          쉽습니다. **([SearchViewModel](app/src/main/java/com/gondev/movie/ui/screen/home/tabs/SearchViewModel.kt) 참고)**
+          쉽습니다. *
+          *([SearchViewModel](app/src/main/java/com/gondev/movie/ui/screen/home/tabs/SearchViewModel.kt)
+          참고)**
 
 5. **Navigation 3과 통합된 Hilt DI**
     - `rememberViewModelStoreNavEntryDecorator`를 사용하여 내비게이션 각 경로마다 독립적인 `ViewModelStore`를 할당합니다.
