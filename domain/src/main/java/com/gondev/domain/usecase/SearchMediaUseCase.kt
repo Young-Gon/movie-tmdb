@@ -1,10 +1,8 @@
 package com.gondev.domain.usecase
 
+import com.gondev.domain.model.MediaType
 import com.gondev.domain.repository.MovieRepository
 import com.gondev.domain.repository.TVRepository
-import com.gondev.networkfetcher.MutateFetcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class SearchMediaUseCase @Inject constructor(
@@ -12,15 +10,9 @@ class SearchMediaUseCase @Inject constructor(
     private val tvRepository: TVRepository
 ) {
 
-    operator fun invoke() = MutateFetcher { query: String ->
-        coroutineScope {
-            val searchMovieDeferred = async { movieRepository.getSearch(query) }
-            val searchTVDeferred = async { tvRepository.getSearch(query) }
-
-            val searchMovie = searchMovieDeferred.await()
-            val searchTV = searchTVDeferred.await()
-
-            searchMovie to searchTV
-        }
-    }.flow
+    suspend operator fun invoke(query: String, mediaType: MediaType) =
+        if (mediaType == MediaType.MOVIE)
+            movieRepository.getSearch(query)
+        else
+            tvRepository.getSearch(query)
 }

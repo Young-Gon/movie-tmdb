@@ -6,12 +6,12 @@ import com.gondev.domain.model.PageContainer as DomainPageContainer
 
 @Serializable
 data class PageContainer<T>(
-    val page: Int,
-    val results: List<T>,
+    val page: Int=0,
+    val results: List<T> = emptyList(),
     @SerialName("total_pages")
-    val totalPages: Int,
+    val totalPages: Int = 0,
     @SerialName("total_results")
-    val totalResults: Int
+    val totalResults: Int = 0
 ) {
     fun <R> toDomain(
         resultConvertor: (T) -> R
